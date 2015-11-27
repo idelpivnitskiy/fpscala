@@ -33,6 +33,11 @@ object MyModule {
   def curry[A,B,C](f: (A, B) => C): A => B => C = {
     a => b => f(a, b)
   }
+
+  // Exercise 4: Implement `uncurry`
+  def uncurry[A,B,C](f: A => B => C): (A, B) => C = {
+    (a, b) => f(a)(b)
+  }
 }
 
 object TestMyModule {
@@ -73,9 +78,19 @@ object TestMyModule {
     println("-----------------\n")
   }
 
+  def testUncurry() = {
+    println("--- testUncurry ---")
+    val f = (a: Int) => (b: Double) => a.toString + "-" + b.toString
+    val uc = uncurry(f)
+    println("%s == %s".format(f(3)(4.0), uc(3, 4.0)))
+    require(f(3)(4.0) == uc(3, 4.0))
+    println("-------------------\n")
+  }
+
   def main(args: Array[String]): Unit = {
     testFib()
     testIsSorter()
     testCurry()
+    testUncurry()
   }
 }
