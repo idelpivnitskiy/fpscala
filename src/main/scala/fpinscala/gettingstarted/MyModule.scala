@@ -28,6 +28,11 @@ object MyModule {
     }
     loop(as.length - 2)
   }
+
+  // Exercise 3: Implement `curry`
+  def curry[A,B,C](f: (A, B) => C): A => B => C = {
+    a => b => f(a, b)
+  }
 }
 
 object TestMyModule {
@@ -59,8 +64,18 @@ object TestMyModule {
     println("--------------------\n")
   }
 
+  def testCurry() = {
+    println("--- testCurry ---")
+    def f(a: Int, b: Double): String = a.toString + "-" + b.toString
+    val c = curry(f)
+    println("%s == %s".format(f(1, 2.0), c(1)(2.0)))
+    require(f(1, 2.0) == c(1)(2.0))
+    println("-----------------\n")
+  }
+
   def main(args: Array[String]): Unit = {
     testFib()
     testIsSorter()
+    testCurry()
   }
 }
