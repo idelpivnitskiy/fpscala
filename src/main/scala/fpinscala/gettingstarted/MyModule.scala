@@ -38,6 +38,11 @@ object MyModule {
   def uncurry[A,B,C](f: A => B => C): (A, B) => C = {
     (a, b) => f(a)(b)
   }
+
+  // Exercise 5: Implement `compose`
+  def compose[A,B,C](f: B => C, g: A => B): A => C = {
+    a => f(g(a))
+  }
 }
 
 object TestMyModule {
@@ -87,10 +92,21 @@ object TestMyModule {
     println("-------------------\n")
   }
 
+  def testCompose() = {
+    println("--- testCompose ---")
+    val f = (b: Double) => b.toString + "!"
+    val g = (a: Int) => a.toDouble
+    val c = compose(f, g)
+    println("%s == %s".format(f(g(5)), c(5)))
+    require(f(g(5)) == c(5))
+    println("-------------------\n")
+  }
+
   def main(args: Array[String]): Unit = {
     testFib()
     testIsSorter()
     testCurry()
     testUncurry()
+    testCompose()
   }
 }
