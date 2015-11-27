@@ -1,6 +1,6 @@
 package fpinscala.gettingstarted
 
-object MyModule {
+object GettingStarted {
 
   // Exercise 1: Write a function to compute the n-th fibonacci number
   def fib(n: Int): Int = {
@@ -45,9 +45,9 @@ object MyModule {
   }
 }
 
-object TestMyModule {
+object GettingStartedTest {
 
-  import MyModule._
+  import GettingStarted._
 
   def testFib() = {
     println("--- testFib ---")
