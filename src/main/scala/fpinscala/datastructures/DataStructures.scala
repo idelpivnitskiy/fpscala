@@ -31,6 +31,13 @@ object List {
     case Cons(_, t) => t
     case _ => throw new IllegalArgumentException("list can not be empty")
   }
+
+  // Exercise 3.3: Implement `setHead` function with O(n) time complexity
+  // for replacing the first element of a List with different value
+  def setHead[A](l: List[A], h: A): List[A] = l match {
+    case Cons(_, t) => Cons(h, t)
+    case _ => throw new IllegalArgumentException("list can not be empty")
+  }
 }
 
 object DataStructures {
@@ -80,6 +87,23 @@ object DataStructuresTest {
     println("----------------\n")
   }
 
+  def testSetHead() = {
+    println("--- testSetHead ---")
+    printAndCheck(List(2, 2), setHead(List(1, 2), 2))
+    printAndCheck(List(2), setHead(List(1), 2))
+    try {
+      printAndCheck(List(2), setHead(Nil, 2))
+    } catch {
+      case e: IllegalArgumentException => println(e.getMessage)
+    }
+    try {
+      printAndCheck(List(2), setHead(null, 2))
+    } catch {
+      case e: IllegalArgumentException => println(e.getMessage)
+    }
+    println("-------------------\n")
+  }
+
   private def printAndCheck[A](expected: A, actual: A) = {
     println("%s == %s".format(expected, actual))
     require(expected == actual)
@@ -88,5 +112,6 @@ object DataStructuresTest {
   def main(args: Array[String]) = {
     testPatternMatching()
     testTail()
+    testSetHead()
   }
 }
