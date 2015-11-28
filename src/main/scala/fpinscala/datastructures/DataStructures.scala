@@ -38,6 +38,17 @@ object List {
     case Cons(_, t) => Cons(h, t)
     case _ => throw new IllegalArgumentException("list can not be empty")
   }
+
+  // Exercise 3.4: Implement `drop` function, which removes the first n elements from a list
+  def drop[A](l: List[A], n: Int): List[A] = {
+    require(l.isInstanceOf[List[A]])
+    require(n >= 0)
+    if (n == 0) l
+    else l match {
+      case Nil => Nil
+      case Cons(_, t) => drop(t, n - 1)
+    }
+  }
 }
 
 object DataStructures {
@@ -104,6 +115,20 @@ object DataStructuresTest {
     println("-------------------\n")
   }
 
+  def testDrop() = {
+    println("--- testDrop ---")
+    printAndCheck(List(3), drop(List(1, 2, 3), 2))
+    printAndCheck(List(1), drop(List(1), 0))
+    printAndCheck(Nil, drop(List(1, 2, 3), 3))
+    printAndCheck(Nil, drop(Nil, 2))
+    try {
+      printAndCheck(List(3), drop(null, 2))
+    } catch {
+      case e: IllegalArgumentException => println(e.getMessage)
+    }
+    println("----------------\n")
+  }
+
   private def printAndCheck[A](expected: A, actual: A) = {
     println("%s == %s".format(expected, actual))
     require(expected == actual)
@@ -113,5 +138,6 @@ object DataStructuresTest {
     testPatternMatching()
     testTail()
     testSetHead()
+    testDrop()
   }
 }
