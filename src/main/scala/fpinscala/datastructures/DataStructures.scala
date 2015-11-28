@@ -41,12 +41,11 @@ object List {
 
   // Exercise 3.4: Implement `drop` function, which removes the first n elements from a list
   def drop[A](l: List[A], n: Int): List[A] = {
-    require(l.isInstanceOf[List[A]])
     require(n >= 0)
     if (n == 0) l
     else l match {
-      case Nil => Nil
       case Cons(_, t) => drop(t, n - 1)
+      case _ => l
     }
   }
 
@@ -128,8 +127,9 @@ object DataStructuresTest {
     printAndCheck(List(1), drop(List(1), 0))
     printAndCheck(Nil, drop(List(1, 2, 3), 3))
     printAndCheck(Nil, drop(Nil, 2))
+    printAndCheck(null, drop(null, 2))
     try {
-      printAndCheck(List(3), drop(null, 2))
+      printAndCheck(List(1), drop(List(1), -5))
     } catch {
       case e: IllegalArgumentException => println(e.getMessage)
     }
