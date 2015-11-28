@@ -49,6 +49,13 @@ object List {
       case Cons(_, t) => drop(t, n - 1)
     }
   }
+
+  // Exercise 3.5: Implement `dropWhile`, which removes elements from the List prefix
+  // as long as they match a predicate
+  def dropWhile[A](l: List[A], f: A => Boolean): List[A] = l match {
+    case Cons(h, t) if f(h) => dropWhile(t, f)
+    case _ => l
+  }
 }
 
 object DataStructures {
@@ -129,6 +136,16 @@ object DataStructuresTest {
     println("----------------\n")
   }
 
+  def testDropWhile() = {
+    println("--- testDropWhile ---")
+    printAndCheck(List(3), dropWhile(List(1, 2, 3), (x: Int) => x < 3))
+    printAndCheck(List(1, 2, 3), dropWhile(List(1, 2, 3), (x: Int) => x > 3))
+    printAndCheck(Nil, dropWhile(List(1, 2, 3), (x: Int) => x < 5))
+    printAndCheck(Nil, dropWhile(Nil, (x: Int) => x < 5))
+    printAndCheck(null, dropWhile(null, (x: Int) => x < 5))
+    println("---------------------\n")
+  }
+
   private def printAndCheck[A](expected: A, actual: A) = {
     println("%s == %s".format(expected, actual))
     require(expected == actual)
@@ -139,5 +156,6 @@ object DataStructuresTest {
     testTail()
     testSetHead()
     testDrop()
+    testDropWhile()
   }
 }
