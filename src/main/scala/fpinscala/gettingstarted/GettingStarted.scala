@@ -2,7 +2,7 @@ package fpinscala.gettingstarted
 
 object GettingStarted {
 
-  // Exercise 1: Write a function to compute the n-th fibonacci number
+  // Exercise 2.1: Write a function to compute the n-th fibonacci number
   def fib(n: Int): Int = {
     if (n < 0)
       return -fib(-n)
@@ -15,7 +15,7 @@ object GettingStarted {
     loop(n, 0, 1)
   }
 
-  // Exercise 2: Implement a polymorphic function to check whether an `Array[A]` is sorted
+  // Exercise 2.2: Implement a polymorphic function to check whether an `Array[A]` is sorted
   def isSorter[A](as: Array[A], ordered: (A, A) => Boolean): Boolean = {
     require(as.length > 1)
 
@@ -29,17 +29,17 @@ object GettingStarted {
     loop(as.length - 2)
   }
 
-  // Exercise 3: Implement `curry`
+  // Exercise 2.3: Implement `curry`
   def curry[A,B,C](f: (A, B) => C): A => B => C = {
     a => b => f(a, b)
   }
 
-  // Exercise 4: Implement `uncurry`
+  // Exercise 2.4: Implement `uncurry`
   def uncurry[A,B,C](f: A => B => C): (A, B) => C = {
     (a, b) => f(a)(b)
   }
 
-  // Exercise 5: Implement `compose`
+  // Exercise 2.5: Implement `compose`
   def compose[A,B,C](f: B => C, g: A => B): A => C = {
     a => f(g(a))
   }
