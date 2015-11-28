@@ -25,6 +25,12 @@ object List {
   def apply[A](as: A*): List[A] = // Variadic function syntax
     if (as.isEmpty) Nil
     else Cons(as.head, apply(as.tail: _*))
+
+  // Exercise 3.2: Implement `tail` function with O(n) time complexity
+  def tail[A](l: List[A]): List[A] = l match {
+    case Cons(_, t) => t
+    case _ => throw new IllegalArgumentException("list can not be empty")
+  }
 }
 
 object DataStructures {
@@ -44,6 +50,7 @@ object DataStructures {
 object DataStructuresTest {
 
   import DataStructures._
+  import List._
 
   def testPatternMatching() = {
     println("--- testEx1 ---")
@@ -56,6 +63,23 @@ object DataStructuresTest {
     println("---------------\n")
   }
 
+  def testTail() = {
+    println("--- testTail ---")
+    printAndCheck(List(2, 3), tail(List(1, 2, 3)))
+    printAndCheck(Nil, tail(List(1)))
+    try {
+      printAndCheck(Nil, tail(Nil))
+    } catch {
+      case e: IllegalArgumentException => println(e.getMessage)
+    }
+    try {
+      printAndCheck(List(2, 3), tail(null))
+    } catch {
+      case e: IllegalArgumentException => println(e.getMessage)
+    }
+    println("----------------\n")
+  }
+
   private def printAndCheck[A](expected: A, actual: A) = {
     println("%s == %s".format(expected, actual))
     require(expected == actual)
@@ -63,5 +87,6 @@ object DataStructuresTest {
 
   def main(args: Array[String]) = {
     testPatternMatching()
+    testTail()
   }
 }
