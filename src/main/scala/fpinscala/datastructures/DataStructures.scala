@@ -55,6 +55,13 @@ object List {
     case Cons(h, t) if f(h) => dropWhile(t, f)
     case _ => l
   }
+
+  // Exercise 3.6: Implement `init`, that returns a List consisting of all but the last element of the List
+  def init[A](l: List[A]): List[A] = l match {
+    case Cons(h, Nil) => Nil
+    case Cons(h, t) => Cons(h, init(t))
+    case _ => l
+  }
 }
 
 object DataStructures {
@@ -146,6 +153,15 @@ object DataStructuresTest {
     println("---------------------\n")
   }
 
+  def testInit() = {
+    println("--- testInit ---")
+    printAndCheck(List(1, 2, 3), init(List(1, 2, 3, 4)))
+    printAndCheck(Nil, init(List(1)))
+    printAndCheck(Nil, init(Nil))
+    printAndCheck(null, init(null))
+    println("----------------\n")
+  }
+
   private def printAndCheck[A](expected: A, actual: A) = {
     println("%s == %s".format(expected, actual))
     require(expected == actual)
@@ -157,5 +173,6 @@ object DataStructuresTest {
     testSetHead()
     testDrop()
     testDropWhile()
+    testInit()
   }
 }
