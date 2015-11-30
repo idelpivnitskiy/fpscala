@@ -62,6 +62,23 @@ object List {
     case Cons(h, t) => Cons(h, init(t))
     case _ => l
   }
+
+  def foldRight[A, B](as: List[A], v: B)(f: (A, B) => B): B = as match {
+    case Nil => v
+    case Cons(x, xs) => f(x, foldRight(xs, v)(f))
+  }
+
+  def sum2(as: List[Int]): Int = {
+    foldRight(as, 0)(_ + _)
+  }
+
+  def product2(as: List[Double]): Double = {
+    foldRight(as, 1.0)(_ * _)
+  }
+
+  // Exercise 3.8: What will happen in this case?
+  // My assumption: this function will return the same result
+  val ex38 = foldRight(List(1, 2, 3), Nil:List[Int])(Cons(_,_))
 }
 
 object DataStructures {
@@ -162,6 +179,12 @@ object DataStructuresTest {
     println("----------------\n")
   }
 
+  def testEx3_8() = {
+    println("--- testEx3_8 ---")
+    printAndCheck(List(1, 2, 3), ex38)
+    println("-----------------\n")
+  }
+
   private def printAndCheck[A](expected: A, actual: A) = {
     println("%s == %s".format(expected, actual))
     require(expected == actual)
@@ -174,5 +197,6 @@ object DataStructuresTest {
     testDrop()
     testDropWhile()
     testInit()
+    testEx3_8()
   }
 }
