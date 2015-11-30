@@ -79,6 +79,11 @@ object List {
   // Exercise 3.8: What will happen in this case?
   // My assumption: this function will return the same result
   val ex38 = foldRight(List(1, 2, 3), Nil:List[Int])(Cons(_,_))
+
+  // Exercise 3.9: Implement `length` using `foldRight`
+  def length[A](l: List[A]): Int = {
+    foldRight(l, 0)((_, acc) => 1 + acc)
+  }
 }
 
 object DataStructures {
@@ -185,6 +190,14 @@ object DataStructuresTest {
     println("-----------------\n")
   }
 
+  def testLength() = {
+    println("--- testLength ---")
+    printAndCheck(3, length(List(1, 2, 3)))
+    printAndCheck(1, length(List(1)))
+    printAndCheck(0, length(Nil))
+    println("------------------\n")
+  }
+
   private def printAndCheck[A](expected: A, actual: A) = {
     println("%s == %s".format(expected, actual))
     require(expected == actual)
@@ -198,5 +211,6 @@ object DataStructuresTest {
     testDropWhile()
     testInit()
     testEx3_8()
+    testLength()
   }
 }
