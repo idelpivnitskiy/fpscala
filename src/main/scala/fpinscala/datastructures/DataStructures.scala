@@ -84,6 +84,13 @@ object List {
   def length[A](l: List[A]): Int = {
     foldRight(l, 0)((_, acc) => 1 + acc)
   }
+
+  // Exercise 3.10: Implement `foldLeft`, which will be tail-recursive
+  @annotation.tailrec
+  def foldLeft[A, B](l: List[A], v: B)(f: (B, A) => B): B = l match {
+    case Nil => v
+    case Cons(x, xs) => foldLeft(xs, f(v, x))(f)
+  }
 }
 
 object DataStructures {
@@ -198,6 +205,34 @@ object DataStructuresTest {
     println("------------------\n")
   }
 
+  def testFoldLeft() = {
+    println("--- testFoldLeft ---")
+    val list3 = List(1, 2, 3)
+    val list3D = List(1.0, 2.0, 3.0)
+    val list1 = List(1)
+    val list1D = List(1.0)
+
+    def sumFL(as: List[Int]): Int =
+      foldLeft(as, 0)(_ + _)
+    printAndCheck(sum2(list3), sumFL(list3))
+    printAndCheck(sum2(list1), sumFL(list1))
+    printAndCheck(sum2(Nil),   sumFL(Nil))
+
+    def productFL(as: List[Double]): Double =
+      foldLeft(as, 1.0)(_ * _)
+    printAndCheck(product2(list3D), productFL(list3D))
+    printAndCheck(product2(list1D), productFL(list1D))
+    printAndCheck(product2(Nil),    productFL(Nil))
+
+    def lengthFL[A](l: List[A]): Int =
+      foldLeft(l, 0)((acc, _) => 1 + acc)
+    printAndCheck(length(list3), lengthFL(list3))
+    printAndCheck(length(list1), lengthFL(list1))
+    printAndCheck(length(Nil),   lengthFL(Nil))
+
+    println("--------------------\n")
+  }
+
   private def printAndCheck[A](expected: A, actual: A) = {
     println("%s == %s".format(expected, actual))
     require(expected == actual)
@@ -212,5 +247,6 @@ object DataStructuresTest {
     testInit()
     testEx3_8()
     testLength()
+    testFoldLeft()
   }
 }
