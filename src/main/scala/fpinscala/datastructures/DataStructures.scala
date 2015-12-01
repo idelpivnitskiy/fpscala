@@ -101,6 +101,11 @@ object List {
 
   def lengthFL[A](l: List[A]): Int =
     foldLeft(l, 0)((acc, _) => 1 + acc)
+
+  // Exercise 3.12: Implement `reverse`
+  def reverse[A](l: List[A]): List[A] = {
+    foldLeft(l, Nil:List[A])((b, a) => Cons(a, b))
+  }
 }
 
 object DataStructures {
@@ -237,6 +242,14 @@ object DataStructuresTest {
     println("--------------------\n")
   }
 
+  def testReverse() = {
+    println("--- testReverse ---")
+    printAndCheck(List(3, 2, 1), reverse(List(1, 2, 3)))
+    printAndCheck(List(1),       reverse(List(1)))
+    printAndCheck(Nil,           reverse(Nil))
+    println("-------------------\n")
+  }
+
   private def printAndCheck[A](expected: A, actual: A) = {
     println("%s == %s".format(expected, actual))
     require(expected == actual)
@@ -252,5 +265,6 @@ object DataStructuresTest {
     testEx3_8()
     testLength()
     testFoldLeft()
+    testReverse()
   }
 }
