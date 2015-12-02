@@ -115,6 +115,15 @@ object List {
   // Exercise 3.14: Implement `append`
   def append[A](l: List[A], e: A): List[A] =
     foldRight(l, Cons(e, Nil))(Cons(_,_))
+
+  // Exercise 3.15: Implement `concatLists`
+  def concatLists[A](ls: List[List[A]]): List[A] = {
+    foldRight(ls, Nil:List[A])(appendList)
+  }
+
+  def appendList[A](first: List[A], second: List[A]): List[A] = {
+    foldRight(first, second)(Cons(_,_))
+  }
 }
 
 object DataStructures {
@@ -267,6 +276,15 @@ object DataStructuresTest {
     println("------------------\n")
   }
 
+  def testConcatLists() = {
+    println("--- testAppend ---")
+    printAndCheck(List(1, 2, 3, 4, 5, 6), concatLists(List(List(1, 2), List(3, 4), List(5, 6))))
+    printAndCheck(List(1, 2), concatLists(List(List(1), List(2))))
+    printAndCheck(Nil,        concatLists(List(Nil)))
+    printAndCheck(Nil,        concatLists(Nil))
+    println("------------------\n")
+  }
+
   private def printAndCheck[A](expected: A, actual: A) = {
     println("%s == %s".format(expected, actual))
     require(expected == actual)
@@ -284,5 +302,6 @@ object DataStructuresTest {
     testFoldLeft()
     testReverse()
     testAppend()
+    testConcatLists()
   }
 }
