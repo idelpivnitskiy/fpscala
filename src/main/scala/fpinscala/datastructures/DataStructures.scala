@@ -111,6 +111,10 @@ object List {
   def foldRightViaFoldLeft[A, B](l: List[A], b: B)(f: (A, B) => B): B = {
     foldLeft(reverse(l), b)((b, a) => f(a, b))
   }
+
+  // Exercise 3.14: Implement `append`
+  def append[A](l: List[A], e: A): List[A] =
+    foldRight(l, Cons(e, Nil))(Cons(_,_))
 }
 
 object DataStructures {
@@ -255,6 +259,14 @@ object DataStructuresTest {
     println("-------------------\n")
   }
 
+  def testAppend() = {
+    println("--- testAppend ---")
+    printAndCheck(List(1, 2, 3), append(List(1, 2), 3))
+    printAndCheck(List(1, 2),    append(List(1), 2))
+    printAndCheck(List(1),       append(Nil, 1))
+    println("------------------\n")
+  }
+
   private def printAndCheck[A](expected: A, actual: A) = {
     println("%s == %s".format(expected, actual))
     require(expected == actual)
@@ -271,5 +283,6 @@ object DataStructuresTest {
     testLength()
     testFoldLeft()
     testReverse()
+    testAppend()
   }
 }
