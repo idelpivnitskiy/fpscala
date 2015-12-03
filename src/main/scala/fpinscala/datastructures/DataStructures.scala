@@ -129,6 +129,11 @@ object List {
   def addOne(l: List[Int]): List[Int] = {
     foldRight(l, Nil:List[Int])((x, xs) => Cons(x + 1, xs))
   }
+
+  // Exercise 3.17: Implement `mapToString`
+  def mapToString(l: List[Double]): List[String] = {
+    foldRight(l, Nil:List[String])((x, xs) => Cons(x.toString, xs))
+  }
 }
 
 object DataStructures {
@@ -298,6 +303,14 @@ object DataStructuresTest {
     println("------------------\n")
   }
 
+  def testMapToString() = {
+    println("--- testMapToString ---")
+    printAndCheck(List("1.0", "2.0", "2.5"), mapToString(List(1.0, 2.0, 2.5)))
+    printAndCheck(List("3.1415"), mapToString(List(3.1415)))
+    printAndCheck(Nil, mapToString(Nil))
+    println("-----------------------\n")
+  }
+
   private def printAndCheck[A](expected: A, actual: A) = {
     println("%s == %s".format(expected, actual))
     require(expected == actual)
@@ -317,5 +330,6 @@ object DataStructuresTest {
     testAppend()
     testConcatLists()
     testAddOne()
+    testMapToString()
   }
 }
