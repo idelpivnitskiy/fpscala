@@ -124,6 +124,11 @@ object List {
   def appendList[A](first: List[A], second: List[A]): List[A] = {
     foldRight(first, second)(Cons(_,_))
   }
+
+  // Exercise 3.16: Implement `addOne`, which will add 1 to each Int list item
+  def addOne(l: List[Int]): List[Int] = {
+    foldRight(l, Nil:List[Int])((x, xs) => Cons(x + 1, xs))
+  }
 }
 
 object DataStructures {
@@ -285,6 +290,14 @@ object DataStructuresTest {
     println("------------------\n")
   }
 
+  def testAddOne() = {
+    println("--- testAddOne ---")
+    printAndCheck(List(1, 2, 3), addOne(List(0, 1, 2)))
+    printAndCheck(List(1), addOne(List(0)))
+    printAndCheck(Nil, addOne(Nil))
+    println("------------------\n")
+  }
+
   private def printAndCheck[A](expected: A, actual: A) = {
     println("%s == %s".format(expected, actual))
     require(expected == actual)
@@ -303,5 +316,6 @@ object DataStructuresTest {
     testReverse()
     testAppend()
     testConcatLists()
+    testAddOne()
   }
 }
