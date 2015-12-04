@@ -149,6 +149,11 @@ object List {
   def flatMap[A, B](l: List[A])(f: A => List[B]): List[B] = {
     foldRight(l, Nil:List[B])((x, xs) => appendList(f(x), xs))
   }
+
+  // Exercise 3.21: Implement `filterViaFlatMap`
+  def filterViaFlatMap[A](l: List[A])(f: A => Boolean): List[A] = {
+    flatMap(l)(x => if (f(x)) List(x) else Nil)
+  }
 }
 
 object DataStructures {
@@ -352,6 +357,15 @@ object DataStructuresTest {
     println("-------------------\n")
   }
 
+  def testFilterViaFlatMap() = {
+    println("--- testFilterViaFlatMap ---")
+    val f = (x: Int) => x % 2 != 0
+    printAndCheck(List(1, 3), filterViaFlatMap(List(1, 2, 3, 4))(f))
+    printAndCheck(Nil, filterViaFlatMap(List(2, 4))(f))
+    printAndCheck(Nil, filterViaFlatMap(Nil)(f))
+    println("----------------------------\n")
+  }
+
   private def printAndCheck[A](expected: A, actual: A) = {
     println("%s == %s".format(expected, actual))
     require(expected == actual)
@@ -375,5 +389,6 @@ object DataStructuresTest {
     testMap()
     testFilter()
     testFlatMap()
+    testFilterViaFlatMap()
   }
 }
