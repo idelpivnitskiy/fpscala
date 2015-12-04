@@ -139,6 +139,11 @@ object List {
   def map[A, B](l: List[A])(f: A => B): List[B] = {
     foldRight(l, Nil:List[B])((x, xs) => Cons(f(x), xs))
   }
+
+  // Exercise 3.19: Implement `filter`
+  def filter[A](l: List[A])(f: A => Boolean): List[A] = {
+    foldRight(l, Nil:List[A])((x, xs) => if (f(x)) Cons(x, xs) else xs)
+  }
 }
 
 object DataStructures {
@@ -324,6 +329,15 @@ object DataStructuresTest {
     println("---------------\n")
   }
 
+  def testFilter() = {
+    println("--- testFilter ---")
+    val f = (x: Int) => x % 2 != 0
+    printAndCheck(List(1, 3), filter(List(1, 2, 3, 4))(f))
+    printAndCheck(Nil, filter(List(2, 4))(f))
+    printAndCheck(Nil, filter(Nil)(f))
+    println("------------------\n")
+  }
+
   private def printAndCheck[A](expected: A, actual: A) = {
     println("%s == %s".format(expected, actual))
     require(expected == actual)
@@ -345,5 +359,6 @@ object DataStructuresTest {
     testAddOne()
     testMapToString()
     testMap()
+    testFilter()
   }
 }
