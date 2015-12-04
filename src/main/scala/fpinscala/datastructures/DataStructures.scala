@@ -134,6 +134,11 @@ object List {
   def mapToString(l: List[Double]): List[String] = {
     foldRight(l, Nil:List[String])((x, xs) => Cons(x.toString, xs))
   }
+
+  // Exercise 3.18: Implement `map`
+  def map[A, B](l: List[A])(f: A => B): List[B] = {
+    foldRight(l, Nil:List[B])((x, xs) => Cons(f(x), xs))
+  }
 }
 
 object DataStructures {
@@ -311,6 +316,14 @@ object DataStructuresTest {
     println("-----------------------\n")
   }
 
+  def testMap() = {
+    println("--- testMap ---")
+    printAndCheck(List("A", "B", "C"), map(List("a", "b", "c"))(_.toUpperCase))
+    printAndCheck(List("A"), map(List("a"))(_.toUpperCase))
+    printAndCheck(Nil, map(Nil:List[String])(_.toUpperCase))
+    println("---------------\n")
+  }
+
   private def printAndCheck[A](expected: A, actual: A) = {
     println("%s == %s".format(expected, actual))
     require(expected == actual)
@@ -331,5 +344,6 @@ object DataStructuresTest {
     testConcatLists()
     testAddOne()
     testMapToString()
+    testMap()
   }
 }
