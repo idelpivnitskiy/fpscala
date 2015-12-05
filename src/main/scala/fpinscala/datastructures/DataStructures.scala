@@ -1,5 +1,7 @@
 package fpinscala.datastructures
 
+import scala.collection.mutable.ListBuffer
+
 sealed trait List[+A] // `List` data type, parameterized on a type, `A`
 case object Nil extends List[Nothing] // A `List` data constructor representing the empty list
 /* Another data constructor, representing nonempty lists. Note that `tail` is another `List[A]`,
@@ -153,6 +155,25 @@ object List {
   // Exercise 3.21: Implement `filterViaFlatMap`
   def filterViaFlatMap[A](l: List[A])(f: A => Boolean): List[A] = {
     flatMap(l)(x => if (f(x)) List(x) else Nil)
+  }
+
+  // Exercise 3.22: Implement `zip`
+  def zip(la: List[Int], lb: List[Int]): List[Int] = {
+    require(lengthFL(la) == lengthFL(lb), "length must be equal")
+    val buf = new ListBuffer[Int]
+    @annotation.tailrec
+    def go(as: List[Int], bs: List[Int]): Unit = (as, bs) match {
+      case (Nil, Nil) => ()
+      case (Cons(x, xs), Cons(y, ys)) => buf += (x + y); go(xs, ys)
+    }
+    go(la, lb)
+    List(buf.toList: _*)
+  }
+
+  def zipRec(as: List[Int], bs: List[Int]): List[Int] = (as, bs) match {
+    case (Nil, _) => Nil
+    case (_, Nil) => Nil
+    case (Cons(x, xs), Cons(y, ys)) => Cons(x + y, zipRec(xs, ys))
   }
 }
 
@@ -366,6 +387,29 @@ object DataStructuresTest {
     println("----------------------------\n")
   }
 
+  def testZip() = {
+    println("--- testZip ---")
+    printAndCheck(List(5, 7, 9), zip(List(1, 2, 3), List(4, 5, 6)))
+    printAndCheck(List(3), zip(List(1), List(2)))
+    printAndCheck(Nil, zip(Nil, List()))
+    try {
+      printAndCheck(List(5, 7, 9), zip(List(1, 2, 3), List(4)))
+    } catch {
+      case e: IllegalArgumentException => println(e.getMessage)
+    }
+    println("---------------\n")
+  }
+
+  def testZipRec() = {
+    println("--- testZipRec ---")
+    printAndCheck(List(5, 7, 9), zipRec(List(1, 2, 3), List(4, 5, 6)))
+    printAndCheck(List(5, 7),    zipRec(List(1, 2),    List(4, 5, 6)))
+    printAndCheck(List(5, 7),    zipRec(List(1, 2, 3), List(4, 5)))
+    printAndCheck(List(3), zipRec(List(1), List(2)))
+    printAndCheck(Nil, zipRec(Nil, List()))
+    println("------------------\n")
+  }
+
   private def printAndCheck[A](expected: A, actual: A) = {
     println("%s == %s".format(expected, actual))
     require(expected == actual)
@@ -390,5 +434,7 @@ object DataStructuresTest {
     testFilter()
     testFlatMap()
     testFilterViaFlatMap()
+    testZip()
+    testZipRec()
   }
 }
