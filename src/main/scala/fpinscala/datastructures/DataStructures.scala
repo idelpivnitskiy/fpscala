@@ -175,6 +175,13 @@ object List {
     case (_, Nil) => Nil
     case (Cons(x, xs), Cons(y, ys)) => Cons(x + y, zipRec(xs, ys))
   }
+
+  // Exercise 3.23: Implement `zipWith`
+  def zipWith[A,B,C](as: List[A], bs: List[B])(f: (A, B) => C): List[C] = (as, bs) match {
+    case (Nil, _) => Nil
+    case (_, Nil) => Nil
+    case (Cons(x, xs), Cons(y, ys)) => Cons(f(x, y), zipWith(xs, ys)(f))
+  }
 }
 
 object DataStructures {
@@ -410,6 +417,17 @@ object DataStructuresTest {
     println("------------------\n")
   }
 
+  def testZipWith() = {
+    println("--- testZipWith ---")
+    val f = (x: Int, y: Int) => x + y
+    printAndCheck(List(5, 7, 9), zipWith(List(1, 2, 3), List(4, 5, 6))(f))
+    printAndCheck(List(5, 7),    zipWith(List(1, 2),    List(4, 5, 6))(f))
+    printAndCheck(List(5, 7),    zipWith(List(1, 2, 3), List(4, 5))(f))
+    printAndCheck(List(3), zipWith(List(1), List(2))(f))
+    printAndCheck(Nil, zipWith(Nil, List())(f))
+    println("-------------------\n")
+  }
+
   private def printAndCheck[A](expected: A, actual: A) = {
     println("%s == %s".format(expected, actual))
     require(expected == actual)
@@ -436,5 +454,6 @@ object DataStructuresTest {
     testFilterViaFlatMap()
     testZip()
     testZipRec()
+    testZipWith()
   }
 }
