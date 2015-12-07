@@ -182,6 +182,22 @@ object List {
     case (_, Nil) => Nil
     case (Cons(x, xs), Cons(y, ys)) => Cons(f(x, y), zipWith(xs, ys)(f))
   }
+
+  // Exercise 3.24: Implement `hasSubsequence`
+  def hasSubsequence[A](seq: List[A], sub: List[A]): Boolean = {
+    def loop(as: List[A]): Boolean = as match {
+      case Nil => seq == Nil
+      case Cons(h, t) => if (compareLists(as, sub)) true else loop(t)
+    }
+    loop(seq)
+  }
+
+  def compareLists[A](seq: List[A], sub: List[A]): Boolean = (seq, sub) match {
+    case (Nil, Nil) => true
+    case (Nil, _) => false
+    case (_, Nil) => true
+    case (Cons(x, xs), Cons(y, ys)) => if (x == y) compareLists(xs, ys) else false
+  }
 }
 
 object DataStructures {
@@ -428,6 +444,24 @@ object DataStructuresTest {
     println("-------------------\n")
   }
 
+  def testHasSubsequence() = {
+    println("--- testHasSubsequence ---")
+    printAndCheck(true, hasSubsequence(List(1, 2, 3), List(2, 3)))
+    printAndCheck(true, hasSubsequence(List(1, 2, 3), List(1, 2)))
+    printAndCheck(true, hasSubsequence(List(1, 2, 3), List(1)))
+    printAndCheck(true, hasSubsequence(List(1, 2, 3), List(2)))
+    printAndCheck(true, hasSubsequence(List(1, 2, 3), List(3)))
+    printAndCheck(true, hasSubsequence(List(1, 2, 3), Nil))
+    printAndCheck(true, hasSubsequence(Nil, Nil))
+
+    printAndCheck(false, hasSubsequence(List(1, 2, 3), List(0)))
+    printAndCheck(false, hasSubsequence(List(1, 2, 3), List(4)))
+    printAndCheck(false, hasSubsequence(List(1, 2, 3), List(1, 3)))
+    printAndCheck(false, hasSubsequence(List(1, 2, 3), List(0, 1)))
+    printAndCheck(false, hasSubsequence(List(1, 2, 3), List(3, 4)))
+    println("--------------------------\n")
+  }
+
   private def printAndCheck[A](expected: A, actual: A) = {
     println("%s == %s".format(expected, actual))
     require(expected == actual)
@@ -455,5 +489,6 @@ object DataStructuresTest {
     testZip()
     testZipRec()
     testZipWith()
+    testHasSubsequence()
   }
 }
