@@ -184,19 +184,18 @@ object List {
   }
 
   // Exercise 3.24: Implement `hasSubsequence`
-  def hasSubsequence[A](seq: List[A], sub: List[A]): Boolean = {
-    def loop(as: List[A]): Boolean = as match {
-      case Nil => seq == Nil
-      case Cons(h, t) => if (compareLists(as, sub)) true else loop(t)
-    }
-    loop(seq)
+  @annotation.tailrec
+  def hasSubsequence[A](seq: List[A], sub: List[A]): Boolean = seq match {
+    case Nil => sub == Nil
+    case _ if startsWith(seq, sub) => true
+    case Cons(h, t) => hasSubsequence(t, sub)
   }
 
-  def compareLists[A](seq: List[A], sub: List[A]): Boolean = (seq, sub) match {
-    case (Nil, Nil) => true
-    case (Nil, _) => false
+  @annotation.tailrec
+  def startsWith[A](seq: List[A], sub: List[A]): Boolean = (seq, sub) match {
     case (_, Nil) => true
-    case (Cons(x, xs), Cons(y, ys)) => if (x == y) compareLists(xs, ys) else false
+    case (Cons(x, xs), Cons(y, ys)) if x == y => startsWith(xs, ys)
+    case _ => false
   }
 }
 
