@@ -33,6 +33,21 @@ object Tree {
     case Leaf(v) => Leaf(f(v))
     case null => null
   }
+
+  // Exercise 3.29: Implement `fold` that abstracts over similarities and rewrite previous functions using the new one
+  def fold[A,B](t: Tree[A], n: B)(f: A => B)(g: (B, B) => B): B = t match {
+    case Branch(left, right) => g(fold(left, n)(f)(g), fold(right, n)(f)(g))
+    case Leaf(v) => f(v)
+    case null => n
+  }
+
+  def sizeViaFold[A](t: Tree[A]): Int = fold(t, 0)(_ => 1)(_ + _ + 1)
+
+  def maximumViaFold(t: Tree[Int]): Int = fold(t, Int.MinValue)(v => v)(_ max _)
+
+  def depthViaFold[A](t: Tree[A]): Int = fold(t, 0)(_ => 1)((l, r) => (l max r) + 1)
+
+  def mapViaFold[A,B](t: Tree[A])(k: A => B): Tree[B] = fold(t, null: Tree[B])(v => Leaf(k(v)))(Branch(_, _))
 }
 
 object TreeTest {
@@ -91,10 +106,56 @@ object TreeTest {
     println("---------------\n")
   }
 
+  def testSizeViaFold() = {
+    println("--- testSizeViaFold ---")
+    printAndCheck(7, sizeViaFold(fullTree))
+    printAndCheck(0, sizeViaFold(null))
+    printAndCheck(4, sizeViaFold(leftTree))
+    printAndCheck(4, sizeViaFold(rightTree))
+    printAndCheck(5, sizeViaFold(seldomLeavesTree))
+    println("-----------------------\n")
+  }
+
+  def testMaximumViaFold() = {
+    println("--- testMaximumViaFold ---")
+    printAndCheck(4,            maximumViaFold(fullTree))
+    printAndCheck(Int.MinValue, maximumViaFold(null))
+    printAndCheck(2,            maximumViaFold(leftTree))
+    printAndCheck(4,            maximumViaFold(rightTree))
+    printAndCheck(4,            maximumViaFold(seldomLeavesTree))
+    println("--------------------------\n")
+  }
+
+  def testDepthViaFold() = {
+    println("--- testDepthViaFold ---")
+    printAndCheck(3, depthViaFold(fullTree))
+    printAndCheck(0, depthViaFold(null))
+    printAndCheck(3, depthViaFold(leftTree))
+    printAndCheck(3, depthViaFold(rightTree))
+    printAndCheck(3, depthViaFold(seldomLeavesTree))
+    println("------------------------\n")
+  }
+
+  def testMapViaFold() = {
+    println("--- testMapViaFold ---")
+    val f = (v: Int) => v + "_" + v
+    printAndCheck(fullTreeStr,         mapViaFold(fullTree)(f))
+    printAndCheck(null,                mapViaFold(null)(f))
+    printAndCheck(leftTreeStr,         mapViaFold(leftTree)(f))
+    printAndCheck(rightTreeStr,        mapViaFold(rightTree)(f))
+    printAndCheck(seldomLeavesTreeStr, mapViaFold(seldomLeavesTree)(f))
+    println("----------------------\n")
+  }
+
   def main(args: Array[String]) = {
     testSize()
     testMaximum()
     testDepth()
     testMap()
+
+    testSizeViaFold()
+    testMaximumViaFold()
+    testDepthViaFold()
+    testMapViaFold()
   }
 }
