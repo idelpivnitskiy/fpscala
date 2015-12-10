@@ -10,14 +10,21 @@ object Tree {
   def size[A](t: Tree[A]): Int = t match {
     case Branch(left, right) => size(left) + size(right) + 1
     case Leaf(_) => 1
-    case _ => 0
+    case null => 0
   }
 
   // Exercise 3.26: Implement `maximum` that returns the maximum element in a Tree[Int]
   def maximum(t: Tree[Int]): Int = t match {
     case Branch(left, right) => maximum(left) max maximum(right)
     case Leaf(v) => v
-    case _ => Int.MinValue
+    case null => Int.MinValue
+  }
+
+  // Exercise 3.27: Implement `depth` that returns the maximum path length from the root of a tree to any leaf
+  def depth[A](t: Tree[A]): Int = t match {
+    case Branch(left, right) => (depth(left) max depth(right)) + 1
+    case Leaf(_) => 1
+    case null => 0
   }
 }
 
@@ -51,8 +58,19 @@ object TreeTest {
     println("-------------------\n")
   }
 
+  def testDepth() = {
+    println("--- testDepth ---")
+    printAndCheck(3, depth(fullTree))
+    printAndCheck(0, depth(null))
+    printAndCheck(3, depth(leftTree))
+    printAndCheck(3, depth(rightTree))
+    printAndCheck(3, depth(seldomLeavesTree))
+    println("-----------------\n")
+  }
+
   def main(args: Array[String]) = {
     testSize()
     testMaximum()
+    testDepth()
   }
 }
