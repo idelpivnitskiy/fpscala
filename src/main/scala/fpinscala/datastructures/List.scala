@@ -207,6 +207,7 @@ object List {
 object ListTest {
 
   import List._
+  import fpinscala.util.TestUtils._
 
   def testTail() = {
     println("--- testTail ---")
@@ -438,11 +439,6 @@ object ListTest {
     printAndCheck(false, hasSubsequence(List(1, 2, 3), List(0, 1)))
     printAndCheck(false, hasSubsequence(List(1, 2, 3), List(3, 4)))
     println("--------------------------\n")
-  }
-
-  private def printAndCheck[A](expected: A, actual: A) = {
-    println("%s == %s".format(expected, actual))
-    require(expected == actual)
   }
 
   def main(args: Array[String]) = {

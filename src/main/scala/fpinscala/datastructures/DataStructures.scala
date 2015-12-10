@@ -17,6 +17,7 @@ object DataStructures {
 object DataStructuresTest {
 
   import DataStructures._
+  import fpinscala.util.TestUtils._
 
   def testPatternMatching() = {
     println("--- testEx1 ---")
@@ -27,11 +28,6 @@ object DataStructuresTest {
     printAndCheck(12, patternMatching(List(3, 4, 5)))
     printAndCheck(101, patternMatching(null))
     println("---------------\n")
-  }
-
-  private def printAndCheck[A](expected: A, actual: A) = {
-    println("%s == %s".format(expected, actual))
-    require(expected == actual)
   }
 
   def main(args: Array[String]) = {
