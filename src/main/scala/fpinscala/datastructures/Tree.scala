@@ -26,6 +26,13 @@ object Tree {
     case Leaf(_) => 1
     case null => 0
   }
+
+  // Exercise 3.28: Implement `map` that modifies each element in a tree with a given function
+  def map[A,B](t: Tree[A])(f: A => B): Tree[B] = t match {
+    case Branch(left, right) => Branch(map(left)(f), map(right)(f))
+    case Leaf(v) => Leaf(f(v))
+    case null => null
+  }
 }
 
 object TreeTest {
@@ -37,6 +44,11 @@ object TreeTest {
   val leftTree = Branch(Branch(Leaf(1), Leaf(2)), null)
   val rightTree = Branch(null, Branch(Leaf(3), Leaf(4)))
   val seldomLeavesTree = Branch(Branch(Leaf(1), null), Branch(null, Leaf(4)))
+
+  val fullTreeStr = Branch(Branch(Leaf("1_1"), Leaf("2_2")), Branch(Leaf("3_3"), Leaf("4_4")))
+  val leftTreeStr = Branch(Branch(Leaf("1_1"), Leaf("2_2")), null)
+  val rightTreeStr = Branch(null, Branch(Leaf("3_3"), Leaf("4_4")))
+  val seldomLeavesTreeStr = Branch(Branch(Leaf("1_1"), null), Branch(null, Leaf("4_4")))
 
   def testSize() = {
     println("--- testSize ---")
@@ -68,9 +80,21 @@ object TreeTest {
     println("-----------------\n")
   }
 
+  def testMap() = {
+    println("--- testMap ---")
+    val f = (v: Int) => v + "_" + v
+    printAndCheck(fullTreeStr,         map(fullTree)(f))
+    printAndCheck(null,                map(null)(f))
+    printAndCheck(leftTreeStr,         map(leftTree)(f))
+    printAndCheck(rightTreeStr,        map(rightTree)(f))
+    printAndCheck(seldomLeavesTreeStr, map(seldomLeavesTree)(f))
+    println("---------------\n")
+  }
+
   def main(args: Array[String]) = {
     testSize()
     testMaximum()
     testDepth()
+    testMap()
   }
 }
