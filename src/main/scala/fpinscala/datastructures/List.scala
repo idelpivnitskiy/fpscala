@@ -12,13 +12,13 @@ case class Cons[+A](head: A, tail: List[A]) extends List[A]
 // `List` companion object. Contains functions for creating and working with lists.
 object List {
 
-  def sum(ints: List[Int]): Int = ints match {
+  def sum(l: List[Int]): Int = l match {
     // A function that uses pattern matching to add up a list of integers
     case Nil => 0 // The sum of the empty list is 0.
     case Cons(x, xs) => x + sum(xs) // The sum of a list starting with `x` is `x` plus the sum of the rest of the list.
   }
 
-  def product(ds: List[Double]): Double = ds match {
+  def product(l: List[Double]): Double = l match {
     case Nil => 1.0
     case Cons(0.0, _) => 0.0
     case Cons(x, xs) => x * product(xs)
@@ -42,6 +42,7 @@ object List {
   }
 
   // Exercise 3.4: Implement `drop` function, which removes the first n elements from a list
+  @annotation.tailrec
   def drop[A](l: List[A], n: Int): List[A] = {
     require(n >= 0)
     if (n == 0) l
@@ -53,6 +54,7 @@ object List {
 
   // Exercise 3.5: Implement `dropWhile`, which removes elements from the List prefix
   // as long as they match a predicate
+  @annotation.tailrec
   def dropWhile[A](l: List[A], f: A => Boolean): List[A] = l match {
     case Cons(h, t) if f(h) => dropWhile(t, f)
     case _ => l
@@ -65,17 +67,17 @@ object List {
     case _ => l
   }
 
-  def foldRight[A, B](as: List[A], v: B)(f: (A, B) => B): B = as match {
+  def foldRight[A, B](l: List[A], v: B)(f: (A, B) => B): B = l match {
     case Nil => v
     case Cons(x, xs) => f(x, foldRight(xs, v)(f))
   }
 
-  def sum2(as: List[Int]): Int = {
-    foldRight(as, 0)(_ + _)
+  def sum2(l: List[Int]): Int = {
+    foldRight(l, 0)(_ + _)
   }
 
-  def product2(as: List[Double]): Double = {
-    foldRight(as, 1.0)(_ * _)
+  def product2(l: List[Double]): Double = {
+    foldRight(l, 1.0)(_ * _)
   }
 
   // Exercise 3.8: What will happen in this case?
@@ -95,14 +97,17 @@ object List {
   }
 
   // Exercise 3.11: Write `sum`, `product` and `length` using `foldLeft`
-  def sumFL(as: List[Int]): Int =
-    foldLeft(as, 0)(_ + _)
+  def sumFL(l: List[Int]): Int = {
+    foldLeft(l, 0)(_ + _)
+  }
 
-  def productFL(as: List[Double]): Double =
-    foldLeft(as, 1.0)(_ * _)
+  def productFL(l: List[Double]): Double = {
+    foldLeft(l, 1.0)(_ * _)
+  }
 
-  def lengthFL[A](l: List[A]): Int =
+  def lengthFL[A](l: List[A]): Int = {
     foldLeft(l, 0)((acc, _) => 1 + acc)
+  }
 
   // Exercise 3.12: Implement `reverse`
   def reverse[A](l: List[A]): List[A] = {
@@ -110,8 +115,8 @@ object List {
   }
 
   // Exercise 3.13: Implement `foldRightViaFoldLeft`
-  def foldRightViaFoldLeft[A, B](l: List[A], b: B)(f: (A, B) => B): B = {
-    foldLeft(reverse(l), b)((b, a) => f(a, b))
+  def foldRightViaFoldLeft[A, B](l: List[A], v: B)(f: (A, B) => B): B = {
+    foldLeft(reverse(l), v)((b, a) => f(a, b))
   }
 
   // Exercise 3.14: Implement `append`
@@ -232,7 +237,7 @@ object DataStructuresTest {
   def testTail() = {
     println("--- testTail ---")
     printAndCheck(List(2, 3), tail(List(1, 2, 3)))
-    printAndCheck(Nil, tail(List(1)))
+    printAndCheck(Nil,        tail(List(1)))
     try {
       printAndCheck(Nil, tail(Nil))
     } catch {
@@ -249,7 +254,7 @@ object DataStructuresTest {
   def testSetHead() = {
     println("--- testSetHead ---")
     printAndCheck(List(2, 2), setHead(List(1, 2), 2))
-    printAndCheck(List(2), setHead(List(1), 2))
+    printAndCheck(List(2),    setHead(List(1), 2))
     try {
       printAndCheck(List(2), setHead(Nil, 2))
     } catch {
@@ -267,9 +272,9 @@ object DataStructuresTest {
     println("--- testDrop ---")
     printAndCheck(List(3), drop(List(1, 2, 3), 2))
     printAndCheck(List(1), drop(List(1), 0))
-    printAndCheck(Nil, drop(List(1, 2, 3), 3))
-    printAndCheck(Nil, drop(Nil, 2))
-    printAndCheck(null, drop(null, 2))
+    printAndCheck(Nil,     drop(List(1, 2, 3), 3))
+    printAndCheck(Nil,     drop(Nil, 2))
+    printAndCheck(null,    drop(null, 2))
     try {
       printAndCheck(List(1), drop(List(1), -5))
     } catch {
@@ -280,20 +285,20 @@ object DataStructuresTest {
 
   def testDropWhile() = {
     println("--- testDropWhile ---")
-    printAndCheck(List(3), dropWhile(List(1, 2, 3), (x: Int) => x < 3))
+    printAndCheck(List(3),       dropWhile(List(1, 2, 3), (x: Int) => x < 3))
     printAndCheck(List(1, 2, 3), dropWhile(List(1, 2, 3), (x: Int) => x > 3))
-    printAndCheck(Nil, dropWhile(List(1, 2, 3), (x: Int) => x < 5))
-    printAndCheck(Nil, dropWhile(Nil, (x: Int) => x < 5))
-    printAndCheck(null, dropWhile(null, (x: Int) => x < 5))
+    printAndCheck(Nil,           dropWhile(List(1, 2, 3), (x: Int) => x < 5))
+    printAndCheck(Nil,           dropWhile(Nil, (x: Int) => x < 5))
+    printAndCheck(null,          dropWhile(null, (x: Int) => x < 5))
     println("---------------------\n")
   }
 
   def testInit() = {
     println("--- testInit ---")
     printAndCheck(List(1, 2, 3), init(List(1, 2, 3, 4)))
-    printAndCheck(Nil, init(List(1)))
-    printAndCheck(Nil, init(Nil))
-    printAndCheck(null, init(null))
+    printAndCheck(Nil,           init(List(1)))
+    printAndCheck(Nil,           init(Nil))
+    printAndCheck(null,          init(null))
     println("----------------\n")
   }
 
@@ -313,9 +318,9 @@ object DataStructuresTest {
 
   def testFoldLeft() = {
     println("--- testFoldLeft ---")
-    val list3 = List(1, 2, 3)
+    val list3  = List(1, 2, 3)
     val list3D = List(1.0, 2.0, 3.0)
-    val list1 = List(1)
+    val list1  = List(1)
     val list1D = List(1.0)
 
     printAndCheck(sum2(list3), sumFL(list3))
@@ -361,24 +366,24 @@ object DataStructuresTest {
   def testAddOne() = {
     println("--- testAddOne ---")
     printAndCheck(List(1, 2, 3), addOne(List(0, 1, 2)))
-    printAndCheck(List(1), addOne(List(0)))
-    printAndCheck(Nil, addOne(Nil))
+    printAndCheck(List(1),       addOne(List(0)))
+    printAndCheck(Nil,           addOne(Nil))
     println("------------------\n")
   }
 
   def testMapToString() = {
     println("--- testMapToString ---")
     printAndCheck(List("1.0", "2.0", "2.5"), mapToString(List(1.0, 2.0, 2.5)))
-    printAndCheck(List("3.1415"), mapToString(List(3.1415)))
-    printAndCheck(Nil, mapToString(Nil))
+    printAndCheck(List("3.1415"),            mapToString(List(3.1415)))
+    printAndCheck(Nil,                       mapToString(Nil))
     println("-----------------------\n")
   }
 
   def testMap() = {
     println("--- testMap ---")
     printAndCheck(List("A", "B", "C"), map(List("a", "b", "c"))(_.toUpperCase))
-    printAndCheck(List("A"), map(List("a"))(_.toUpperCase))
-    printAndCheck(Nil, map(Nil:List[String])(_.toUpperCase))
+    printAndCheck(List("A"),           map(List("a"))(_.toUpperCase))
+    printAndCheck(Nil,                 map(Nil:List[String])(_.toUpperCase))
     println("---------------\n")
   }
 
@@ -386,8 +391,8 @@ object DataStructuresTest {
     println("--- testFilter ---")
     val f = (x: Int) => x % 2 != 0
     printAndCheck(List(1, 3), filter(List(1, 2, 3, 4))(f))
-    printAndCheck(Nil, filter(List(2, 4))(f))
-    printAndCheck(Nil, filter(Nil)(f))
+    printAndCheck(Nil,        filter(List(2, 4))(f))
+    printAndCheck(Nil,        filter(Nil)(f))
     println("------------------\n")
   }
 
@@ -395,8 +400,8 @@ object DataStructuresTest {
     println("--- testFlatMap ---")
     val f = (x: Int) => List(x, x)
     printAndCheck(List(1, 1, 2, 2, 3, 3), flatMap(List(1, 2, 3))(f))
-    printAndCheck(List(1, 1), flatMap(List(1))(f))
-    printAndCheck(Nil, flatMap(Nil)(f))
+    printAndCheck(List(1, 1),             flatMap(List(1))(f))
+    printAndCheck(Nil,                    flatMap(Nil)(f))
     println("-------------------\n")
   }
 
@@ -404,16 +409,16 @@ object DataStructuresTest {
     println("--- testFilterViaFlatMap ---")
     val f = (x: Int) => x % 2 != 0
     printAndCheck(List(1, 3), filterViaFlatMap(List(1, 2, 3, 4))(f))
-    printAndCheck(Nil, filterViaFlatMap(List(2, 4))(f))
-    printAndCheck(Nil, filterViaFlatMap(Nil)(f))
+    printAndCheck(Nil,        filterViaFlatMap(List(2, 4))(f))
+    printAndCheck(Nil,        filterViaFlatMap(Nil)(f))
     println("----------------------------\n")
   }
 
   def testZip() = {
     println("--- testZip ---")
     printAndCheck(List(5, 7, 9), zip(List(1, 2, 3), List(4, 5, 6)))
-    printAndCheck(List(3), zip(List(1), List(2)))
-    printAndCheck(Nil, zip(Nil, List()))
+    printAndCheck(List(3),       zip(List(1), List(2)))
+    printAndCheck(Nil,           zip(Nil, List()))
     try {
       printAndCheck(List(5, 7, 9), zip(List(1, 2, 3), List(4)))
     } catch {
@@ -427,8 +432,8 @@ object DataStructuresTest {
     printAndCheck(List(5, 7, 9), zipRec(List(1, 2, 3), List(4, 5, 6)))
     printAndCheck(List(5, 7),    zipRec(List(1, 2),    List(4, 5, 6)))
     printAndCheck(List(5, 7),    zipRec(List(1, 2, 3), List(4, 5)))
-    printAndCheck(List(3), zipRec(List(1), List(2)))
-    printAndCheck(Nil, zipRec(Nil, List()))
+    printAndCheck(List(3),       zipRec(List(1), List(2)))
+    printAndCheck(Nil,           zipRec(Nil, List()))
     println("------------------\n")
   }
 
@@ -438,8 +443,8 @@ object DataStructuresTest {
     printAndCheck(List(5, 7, 9), zipWith(List(1, 2, 3), List(4, 5, 6))(f))
     printAndCheck(List(5, 7),    zipWith(List(1, 2),    List(4, 5, 6))(f))
     printAndCheck(List(5, 7),    zipWith(List(1, 2, 3), List(4, 5))(f))
-    printAndCheck(List(3), zipWith(List(1), List(2))(f))
-    printAndCheck(Nil, zipWith(Nil, List())(f))
+    printAndCheck(List(3),       zipWith(List(1), List(2))(f))
+    printAndCheck(Nil,           zipWith(Nil, List())(f))
     println("-------------------\n")
   }
 
