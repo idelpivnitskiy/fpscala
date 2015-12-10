@@ -12,6 +12,13 @@ object Tree {
     case Leaf(_) => 1
     case _ => 0
   }
+
+  // Exercise 3.26: Implement `maximum` that returns the maximum element in a Tree[Int]
+  def maximum(t: Tree[Int]): Int = t match {
+    case Branch(left, right) => maximum(left) max maximum(right)
+    case Leaf(v) => v
+    case _ => Int.MinValue
+  }
 }
 
 object TreeTest {
@@ -34,7 +41,18 @@ object TreeTest {
     println("----------------\n")
   }
 
+  def testMaximum() = {
+    println("--- testMaximum ---")
+    printAndCheck(4,            maximum(fullTree))
+    printAndCheck(Int.MinValue, maximum(null))
+    printAndCheck(2,            maximum(leftTree))
+    printAndCheck(4,            maximum(rightTree))
+    printAndCheck(4,            maximum(seldomLeavesTree))
+    println("-------------------\n")
+  }
+
   def main(args: Array[String]) = {
     testSize()
+    testMaximum()
   }
 }
