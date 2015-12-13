@@ -10,6 +10,12 @@ sealed trait Option[+A] {
     case None => None
     case Some(v) => Some(f(v))
   }
+
+  // Exercise 4.1: Implement `getOrElse`
+  def getOrElse[B >: A](default: => B): B = this match {
+    case None => default
+    case Some(v) => v
+  }
 }
 case object None extends Option[Nothing]
 case class Some[+A](get: A) extends Option[A]
@@ -26,7 +32,15 @@ object OptionTest {
     println("---------------\n")
   }
 
+  def testGetOrElse() = {
+    println("--- testMap ---")
+    printAndCheck(1, Some(1).getOrElse(2))
+    printAndCheck(2, None.getOrElse(2))
+    println("---------------\n")
+  }
+
   def main(args: Array[String]) = {
     testMap()
+    testGetOrElse()
   }
 }
