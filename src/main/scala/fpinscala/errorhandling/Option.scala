@@ -30,6 +30,19 @@ sealed trait Option[+A] {
     case None => ob
     case _ => this
   }
+
+  // Exercise 4.1: Implement `filter`
+  def filter(f: A => Boolean): Option[A] = {
+    if (map(f).getOrElse(false)) this
+    else None
+  }
+  def filterAlt(f: A => Boolean): Option[A] = {
+    flatMap(a => if (f(a)) Some(a) else None)
+  }
+  def filterOpt(f: A => Boolean): Option[A] = this match {
+    case Some(v) if f(v) => this
+    case _ => None
+  }
 }
 case object None extends Option[Nothing]
 case class Some[+A](get: A) extends Option[A]
@@ -72,10 +85,28 @@ object OptionTest {
     println("------------------\n")
   }
 
+  def testFilter() = {
+    println("--- testFilter ---")
+    val f = (v: Int) => v > 0
+    printAndCheck(Some(1), Some(1).filter(f))
+    printAndCheck(None,    Some(0).filter(f))
+    printAndCheck(None,    None.filter(f))
+
+    printAndCheck(Some(1), Some(1).filterAlt(f))
+    printAndCheck(None,    Some(0).filterAlt(f))
+    printAndCheck(None,    None.filterAlt(f))
+
+    printAndCheck(Some(1), Some(1).filterOpt(f))
+    printAndCheck(None,    Some(0).filterOpt(f))
+    printAndCheck(None,    None.filterOpt(f))
+    println("------------------\n")
+  }
+
   def main(args: Array[String]) = {
     testMap()
     testGetOrElse()
     testFlatMap()
     testOrElse()
+    testFilter()
   }
 }
