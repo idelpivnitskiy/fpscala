@@ -21,6 +21,15 @@ sealed trait Option[+A] {
   def flatMap[B](f: A => Option[B]): Option[B] = {
     map(f).getOrElse(None)
   }
+
+  // Exercise 4.1: Implement `orElse`
+  def orElse[B >: A](ob: => Option[B]): Option[B] = {
+    map(Some(_)).getOrElse(ob)
+  }
+  def orElseOpt[B >: A](ob: => Option[B]): Option[B] = this match {
+    case None => ob
+    case _ => this
+  }
 }
 case object None extends Option[Nothing]
 case class Some[+A](get: A) extends Option[A]
@@ -53,9 +62,20 @@ object OptionTest {
     println("-------------------\n")
   }
 
+  def testOrElse() = {
+    println("--- testOrElse ---")
+    printAndCheck(Some(1), Some(1).orElse(None))
+    printAndCheck(Some(2), None.orElse(Some(2)))
+
+    printAndCheck(Some(1), Some(1).orElseOpt(None))
+    printAndCheck(Some(2), None.orElseOpt(Some(2)))
+    println("------------------\n")
+  }
+
   def main(args: Array[String]) = {
     testMap()
     testGetOrElse()
     testFlatMap()
+    testOrElse()
   }
 }
