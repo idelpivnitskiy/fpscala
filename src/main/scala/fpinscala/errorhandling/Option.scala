@@ -16,6 +16,11 @@ sealed trait Option[+A] {
     case None => default
     case Some(v) => v
   }
+
+  // Exercise 4.1: Implement `flatMap`
+  def flatMap[B](f: A => Option[B]): Option[B] = {
+    map(f).getOrElse(None)
+  }
 }
 case object None extends Option[Nothing]
 case class Some[+A](get: A) extends Option[A]
@@ -39,8 +44,18 @@ object OptionTest {
     println("---------------\n")
   }
 
+  def testFlatMap() = {
+    println("--- testFlatMap ---")
+    val f = (v: Int) => if (v > 0) Some(v + "_" + v) else None
+    printAndCheck(Some("1_1"), Some(1).flatMap(f))
+    printAndCheck(None,        Some(0).flatMap(f))
+    printAndCheck(None,        None.flatMap(f))
+    println("-------------------\n")
+  }
+
   def main(args: Array[String]) = {
     testMap()
     testGetOrElse()
+    testFlatMap()
   }
 }
