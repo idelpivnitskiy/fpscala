@@ -16,6 +16,15 @@ object OptionUsage {
       Some(ms.sum / ms.length)
     }
   }
+
+  def mean(xs: Seq[Double]): Option[Double] = {
+    if (xs.isEmpty) None
+    else Some(xs.sum / xs.length)
+  }
+
+  def varianceViaMean(xs: Seq[Double]): Option[Double] = {
+    mean(xs).flatMap(m => mean(xs.map(d => math.pow(d - m, 2))))
+  }
 }
 
 object OptionUsageTest {
@@ -26,6 +35,9 @@ object OptionUsageTest {
     println("--- testVariance ---")
     printAndCheck(None,          variance(Seq()))
     printAndCheck(Some(2.0/3.0), variance(Seq(1, 2, 3)))
+
+    printAndCheck(None,          varianceViaMean(Seq()))
+    printAndCheck(Some(2.0/3.0), varianceViaMean(Seq(1, 2, 3)))
     println("--------------------\n")
   }
 
