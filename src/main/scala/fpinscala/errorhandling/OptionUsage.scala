@@ -25,6 +25,14 @@ object OptionUsage {
   def varianceViaMean(xs: Seq[Double]): Option[Double] = {
     mean(xs).flatMap(m => mean(xs.map(d => math.pow(d - m, 2))))
   }
+
+  def lift[A,B](f: A => B): Option[A] => Option[B] = _ map f
+
+  // Exercise 4.3: Implement `map2` that combines two Option values using a binary function
+  def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = (a, b) match {
+    case (Some(av), Some(bv)) => Some(f(av, bv))
+    case _ => None
+  }
 }
 
 object OptionUsageTest {
@@ -41,7 +49,18 @@ object OptionUsageTest {
     println("--------------------\n")
   }
 
+  def testMap2() = {
+    println("--- testMap2 ---")
+    val f = (a: Int, b: Int) => a + b
+    printAndCheck(None,    map2(None,    None)   (f))
+    printAndCheck(None,    map2(None,    Some(2))(f))
+    printAndCheck(None,    map2(Some(1), None)   (f))
+    printAndCheck(Some(3), map2(Some(1), Some(2))(f))
+    println("----------------\n")
+  }
+
   def main(args: Array[String]) = {
     testVariance()
+    testMap2()
   }
 }
