@@ -43,7 +43,16 @@ object OptionUsage {
   }
 
   def sequenceViaFoldRight[A](l: List[Option[A]]): Option[List[A]] = {
-    l.foldRight[Option[List[A]]](Some(Nil))((x, y) => map2(x, y)(_ :: _))
+    l.foldRight[Option[List[A]]](Some(Nil))((h, t) => map2(h, t)(_ :: _))
+  }
+
+  // Exercise 4.5: Implement `traverse`
+  def traverse[A,B](l: List[A])(f: A => Option[B]): Option[List[B]] = {
+    l.foldRight[Option[List[B]]](Some(Nil))((h, t) => map2(f(h), t)(_ :: _))
+  }
+
+  def sequenceViaTraverse[A](l: List[Option[A]]): Option[List[A]] = {
+    traverse(l)(x => x)
   }
 }
 
@@ -86,6 +95,13 @@ object OptionUsageTest {
     printAndCheck(None, sequenceViaFoldRight(List(Some(1), None, Some(3))))
     printAndCheck(None, sequenceViaFoldRight(List(Some(1), Some(2), None)))
     printAndCheck(None, sequenceViaFoldRight(List(None)))
+
+    printAndCheck(Some(List(1, 2, 3)), sequenceViaTraverse(List(Some(1), Some(2), Some(3))))
+    printAndCheck(Some(List(1)),       sequenceViaTraverse(List(Some(1))))
+    printAndCheck(None, sequenceViaTraverse(List(None, Some(2), Some(3))))
+    printAndCheck(None, sequenceViaTraverse(List(Some(1), None, Some(3))))
+    printAndCheck(None, sequenceViaTraverse(List(Some(1), Some(2), None)))
+    printAndCheck(None, sequenceViaTraverse(List(None)))
     println("--------------------\n")
   }
 
