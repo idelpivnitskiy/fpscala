@@ -33,6 +33,18 @@ object OptionUsage {
     case (Some(av), Some(bv)) => Some(f(av, bv))
     case _ => None
   }
+
+  // Exercise 4.4: Implement `sequence` that combines a list of Options into one Option containing a list of all
+  // the Some values in the original list. If the original list contains None even once, the result of the function
+  // should be None; otherwise the result should be Some with a list of all the values
+  def sequence[A](l: List[Option[A]]): Option[List[A]] = l match {
+    case Nil => Some(Nil)
+    case h :: t => h.flatMap(hv => sequence(t).map(hv :: _));
+  }
+
+  def sequenceViaFoldRight[A](l: List[Option[A]]): Option[List[A]] = {
+    l.foldRight[Option[List[A]]](Some(Nil))((x, y) => map2(x, y)(_ :: _))
+  }
 }
 
 object OptionUsageTest {
@@ -59,8 +71,27 @@ object OptionUsageTest {
     println("----------------\n")
   }
 
+  def testSequence() = {
+    println("--- testSequence ---")
+    printAndCheck(Some(List(1, 2, 3)), sequence(List(Some(1), Some(2), Some(3))))
+    printAndCheck(Some(List(1)),       sequence(List(Some(1))))
+    printAndCheck(None, sequence(List(None, Some(2), Some(3))))
+    printAndCheck(None, sequence(List(Some(1), None, Some(3))))
+    printAndCheck(None, sequence(List(Some(1), Some(2), None)))
+    printAndCheck(None, sequence(List(None)))
+
+    printAndCheck(Some(List(1, 2, 3)), sequenceViaFoldRight(List(Some(1), Some(2), Some(3))))
+    printAndCheck(Some(List(1)),       sequenceViaFoldRight(List(Some(1))))
+    printAndCheck(None, sequenceViaFoldRight(List(None, Some(2), Some(3))))
+    printAndCheck(None, sequenceViaFoldRight(List(Some(1), None, Some(3))))
+    printAndCheck(None, sequenceViaFoldRight(List(Some(1), Some(2), None)))
+    printAndCheck(None, sequenceViaFoldRight(List(None)))
+    println("--------------------\n")
+  }
+
   def main(args: Array[String]) = {
     testVariance()
     testMap2()
+    testSequence()
   }
 }
