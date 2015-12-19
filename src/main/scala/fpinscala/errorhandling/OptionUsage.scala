@@ -82,26 +82,17 @@ object OptionUsageTest {
 
   def testSequence() = {
     println("--- testSequence ---")
-    printAndCheck(Some(List(1, 2, 3)), sequence(List(Some(1), Some(2), Some(3))))
-    printAndCheck(Some(List(1)),       sequence(List(Some(1))))
-    printAndCheck(None, sequence(List(None, Some(2), Some(3))))
-    printAndCheck(None, sequence(List(Some(1), None, Some(3))))
-    printAndCheck(None, sequence(List(Some(1), Some(2), None)))
-    printAndCheck(None, sequence(List(None)))
-
-    printAndCheck(Some(List(1, 2, 3)), sequenceViaFoldRight(List(Some(1), Some(2), Some(3))))
-    printAndCheck(Some(List(1)),       sequenceViaFoldRight(List(Some(1))))
-    printAndCheck(None, sequenceViaFoldRight(List(None, Some(2), Some(3))))
-    printAndCheck(None, sequenceViaFoldRight(List(Some(1), None, Some(3))))
-    printAndCheck(None, sequenceViaFoldRight(List(Some(1), Some(2), None)))
-    printAndCheck(None, sequenceViaFoldRight(List(None)))
-
-    printAndCheck(Some(List(1, 2, 3)), sequenceViaTraverse(List(Some(1), Some(2), Some(3))))
-    printAndCheck(Some(List(1)),       sequenceViaTraverse(List(Some(1))))
-    printAndCheck(None, sequenceViaTraverse(List(None, Some(2), Some(3))))
-    printAndCheck(None, sequenceViaTraverse(List(Some(1), None, Some(3))))
-    printAndCheck(None, sequenceViaTraverse(List(Some(1), Some(2), None)))
-    printAndCheck(None, sequenceViaTraverse(List(None)))
+    def test(f: List[Option[Int]] => Option[List[Int]]) = {
+      printAndCheck(Some(List(1, 2, 3)), f(List(Some(1), Some(2), Some(3))))
+      printAndCheck(Some(List(1)),       f(List(Some(1))))
+      printAndCheck(None,                f(List(None, Some(2), Some(3))))
+      printAndCheck(None,                f(List(Some(1), None, Some(3))))
+      printAndCheck(None,                f(List(Some(1), Some(2), None)))
+      printAndCheck(None,                f(List(None)))
+    }
+    test(sequence)
+    test(sequenceViaFoldRight)
+    test(sequenceViaTraverse)
     println("--------------------\n")
   }
 
