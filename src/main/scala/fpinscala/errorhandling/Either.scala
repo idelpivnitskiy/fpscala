@@ -16,6 +16,12 @@ sealed trait Either[+E, +A] {
     case Right(a) => f(a)
     case Left(e) => Left(e)
   }
+
+  // Exercise 4.6: Implement `orElse`
+  def orElse[EE >: E, B >: A](b: => Either[EE, B]): Either[EE, B] = this match {
+    case Right(_) => this
+    case Left(_) => b
+  }
 }
 case class Left[+E](value: E) extends Either[E, Nothing]
 case class Right[+A](value: A) extends Either[Nothing, A]
@@ -44,8 +50,17 @@ object EitherTest {
     println("-------------------\n")
   }
 
+  def testOrElse() = {
+    println("--- testOrElse ---")
+    val b = Right(0)
+    printAndCheck(Right(1), Right(1).orElse(b))
+    printAndCheck(b,        Left().orElse(b))
+    println("------------------\n")
+  }
+
   def main(args: Array[String]) = {
     testMap()
     testFlatMap()
+    testOrElse()
   }
 }
