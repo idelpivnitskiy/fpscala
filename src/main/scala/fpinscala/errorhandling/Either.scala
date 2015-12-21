@@ -22,6 +22,18 @@ sealed trait Either[+E, +A] {
     case Right(_) => this
     case Left(_) => b
   }
+
+  // Exercise 4.6: Implement `map2`
+  def map2[EE >: E, B, C](b: Either[EE, B])(f: (A, B) => C): Either[EE, C] = (this, b) match {
+    case (Right(av), Right(bv)) => Right(f(av, bv))
+    case (Left(e), _) => Left(e)
+    case (_, Left(e)) => Left(e)
+  }
+
+  def map2ViaYield[EE >: E, B, C](b: Either[EE, B])(f: (A, B) => C): Either[EE, C] = for {
+    a1 <- this
+    b1 <- b
+  } yield f(a1, b1)
 }
 case class Left[+E](value: E) extends Either[E, Nothing]
 case class Right[+A](value: A) extends Either[Nothing, A]
@@ -58,9 +70,29 @@ object EitherTest {
     println("------------------\n")
   }
 
+  def testMap2() = {
+    println("--- testOrElse ---")
+    val ar = Right(1)
+    val br = Right(2)
+    val f = (a: Int, b: Int) => a + b
+    val al = Left("error a")
+    val bl = Left("error b")
+    printAndCheck(Right(3), ar.map2(br)(f))
+    printAndCheck(al,       al.map2(br)(f))
+    printAndCheck(bl,       ar.map2(bl)(f))
+    printAndCheck(al,       al.map2(bl)(f))
+
+    printAndCheck(Right(3), ar.map2ViaYield(br)(f))
+    printAndCheck(al,       al.map2ViaYield(br)(f))
+    printAndCheck(bl,       ar.map2ViaYield(bl)(f))
+    printAndCheck(al,       al.map2ViaYield(bl)(f))
+    println("------------------\n")
+  }
+
   def main(args: Array[String]) = {
     testMap()
     testFlatMap()
     testOrElse()
+    testMap2()
   }
 }
